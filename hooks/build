@@ -1,0 +1,39 @@
+#!/bin/bash
+set -eu
+
+if [ "$DOCKERFILE_PATH" = "" ]; then
+    DOCKERFILE_PATH_ARG=""
+else
+    DOCKERFILE_PATH_ARG="-f $DOCKERFILE_PATH"
+fi
+
+if [[ ${DOCKER_TAG} =~ ^([0-9.]*)(-vision[0-9.]*)?(-audio[0-9.]*)?-cuda(.+)$ ]]; then
+    torch_ver="torch==${BASH_REMATCH[1]}"
+    torch_vision="${BASH_REMATCH[2]}"
+    torch_audio="${BASH_REMATCH[3]}"
+    cudas="${BASH_REMATCH[4]}"
+
+    if [[ $cudas =~ ^([0-9.]*)-.*$ ]]; then
+        cuda=cu${BASH_REMATCH[1]//./}
+    else
+        cuda="cpu"
+    fi
+    
+    if [[ $torch_vision =~ ^-vision([0-9.]*)$ ]]; then
+        torch_vision_ver="torch_vision==${BASH_REMATCH[1]}"
+    else
+        torch_vision_ver=""
+    fi
+    
+    if [[ $torch_audio =~ ^-audio([0-9.]*)$ ]]; then
+        torch_audio_ver="torch_audio==${BASH_REMATCH[1]}"
+    else
+        torch_audio_ver=""
+    fi
+    
+    install_libraries="$torch_ver+$cuda $torch_vision_ver+$cuda $torch_audio_ver"
+
+    docker build --build-arg BASE_IMAGE=nvidia/cuda:${cudas} --build-arg DEPS="${install_libraries}" ${DOCKERFILE_PATH_ARG} -t $IMAGE_NAME .
+else
+    echo "Error: Wrong tag format."
+fi
