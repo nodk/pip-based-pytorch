@@ -20,13 +20,13 @@ if [[ ${DOCKER_TAG} =~ ^([0-9.]*)(-vision[0-9.]*)?(-audio[0-9.]*)?-cuda(.+)$ ]];
     fi
     
     if [[ $torch_vision =~ ^-vision([0-9.]*)$ ]]; then
-        torch_vision_ver="torch_vision==${BASH_REMATCH[1]}"
+        torch_vision_ver="torchvision==${BASH_REMATCH[1]}"
     else
         torch_vision_ver=""
     fi
     
     if [[ $torch_audio =~ ^-audio([0-9.]*)$ ]]; then
-        torch_audio_ver="torch_audio==${BASH_REMATCH[1]}"
+        torch_audio_ver="torchaudio==${BASH_REMATCH[1]}"
     else
         torch_audio_ver=""
     fi
