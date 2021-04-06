@@ -1,4 +1,9 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-RUN pip install ${DEPS} -f https://download.pytorch.org/whl/torch_stable.html
+RUN apt-get update && apt-get install -y\
+    python3 python3-pip\
+ && rm -rf /var/lib/apt/lists/*
+
+ARG DEPS=torch
+RUN pip3 install ${DEPS} -f https://download.pytorch.org/whl/torch_stable.html
