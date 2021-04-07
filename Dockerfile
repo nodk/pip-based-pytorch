@@ -6,4 +6,4 @@ RUN apt-get update && apt-get install -y\
  && rm -rf /var/lib/apt/lists/*
 
 ARG DEPS=torch
-RUN pip3 install ${DEPS} -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install --no-cache-dir ${DEPS} -f https://download.pytorch.org/whl/torch_stable.html
